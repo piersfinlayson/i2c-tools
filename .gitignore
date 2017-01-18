@@ -1,0 +1,12 @@
+*.o
+*.a
+*.ao
+*.so
+*.so.0
+*.so.0.1.0
+eeprog
+build
+i2cdetect
+i2cdump
+i2cget
+i2cset
