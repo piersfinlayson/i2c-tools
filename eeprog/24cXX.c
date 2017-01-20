@@ -170,13 +170,28 @@ int eeprom_read_byte(struct eeprom* e, __u16 mem_addr)
 
 int eeprom_write_byte(struct eeprom *e, __u16 mem_addr, __u8 data)
 {
+	int rc;
 	if(e->type == EEPROM_TYPE_8BIT_ADDR) {
 		__u8 buf[2] = { mem_addr & 0x00ff, data };
-		return i2c_write_2b(e, buf);
+		rc = i2c_write_2b(e, buf);
+		if (!rc)
+		{
+			// Sleep 5ms for write to "take"
+			// Strictly should poll for ack/nack
+			usleep(5000);
+		}
+		return rc;
 	} else if(e->type == EEPROM_TYPE_16BIT_ADDR) {
 		__u8 buf[3] = 
 			{ (mem_addr >> 8) & 0x00ff, mem_addr & 0x00ff, data };
-		return i2c_write_3b(e, buf);
+		rc = i2c_write_3b(e, buf);
+		if (!rc)
+		{
+			// Sleep 5ms for write to "take"
+			// Strictly should poll for ack/nack
+			usleep(5000);
+		}
+		return rc;
 	} else {
 		fprintf(stderr, "ERR: unknown eeprom type\n");
 		return -1;
